@@ -225,8 +225,7 @@ int main(int argc, char* argv[])
                     color.a = 255;
                     break;
                 default:
-                    std::cout << "WHAT?? " << x << ", " << drawStart << ", " << drawEnd << std::endl;
-                    std::cout << "> " << level.level[mapc.x][mapc.y] << " << " << mapc.x << " << " << mapc.y << std::endl;
+                    std::cout << "Unknown object of type <<" << level.level[mapc.x][mapc.y] << ">> at x:" << mapc.x << ", y:" << mapc.y << std::endl;
                     return -8;
             }
 
