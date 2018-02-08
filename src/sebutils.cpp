@@ -23,16 +23,48 @@ namespace su
 
         if(k.empty())
         {
+            std::cout << "K is empty." << std::endl;
             return false;
         }
 
         l->height = k.size();
         l->width = k.front().size();
-        l->level = new std::string[k.size()];
+        int maxdim = 0;
 
         for(int i = 0; i < k.size(); i++)
         {
-            l->level[i] = k.at(i);
+            // trova stringa piu lunga
+            if(k.at(i).size() > l->width)
+            {
+                l->width = k.at(i).size();
+            }
+        }
+
+        if(l->height > l->width)
+        {
+            // matrice quadrata con lato lungo altezza
+            maxdim = l->height;
+        }
+        else
+        {
+            // matrice quadrata con lato lungo larghezza
+            maxdim = l->width;
+        }
+        //l->height = l->width = maxdim;
+        l->level = new std::string[maxdim];
+
+        // inizializzo tutta la mappa a 0
+        for(int i = 0; i < maxdim; i++)
+        {
+            l->level[i] = std::string(maxdim, '0');
+        }
+
+        for(int i = 0; i < k.size(); i++)
+        {
+            for(int j = 0; j < k.at(i).size(); j++)
+            {
+                l->level[i].at(j) = k.at(i).at(j);
+            }
         }
 
         substituteSpacesWithZeros(l);

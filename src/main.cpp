@@ -49,19 +49,54 @@ void quitSDL()
 void drawVerticalLine(SDL_Renderer* r, int x, int startY, int endY, su::RGBA rgba)
 {
     SDL_SetRenderDrawColor(r, rgba.r, rgba.g, rgba.b, rgba.a);
-    SDL_RenderDrawLine(r, x, startY, x+1, endY);
+    SDL_RenderDrawLine(r, x, startY, x, endY);
 }
 
 
 int main(int argc, char* argv[])
 {
+    std::string dataFolder = "data/";
+    std::string defaultMap = "1.dog";
+    std::string mapName;
+
+    if( argc > 2 )
+    {
+        printf("Error: too many arguments.\n\nUsage: \n\tWOLF3D.exe <mapname.dog>\n\tWOLF3D.exe\n\n");
+        return -1;
+    }
+    else if( argc == 2 )
+    {
+        mapName = /*dataFolder + */argv[1];
+    }
+    else
+    {
+        mapName = dataFolder + defaultMap;
+    }
+
+    std::cout << "Loading: " << mapName << std::endl << std::endl;
+
+    // std::string mapName = "data/home.dog";
     su::Level level;
-    bool loaded = su::loadLevel("data/1.txt", &level); // load map from file
+    bool loaded = su::loadLevel(mapName, &level); // load map from file
 
     if(!loaded)
     {
+        std::cout << "Error: Cannot load map: " << mapName << std::endl;
         return -1; // cannot load the level from map file
     }
+
+    for(uint8_t i = 0; i < level.height; i++) // print the map
+    {
+        for(uint8_t j = 0; j < level.width; j++)
+        {
+            std::cout << level.level[i].at(j);
+        }
+        std::cout << std::endl;
+    }
+
+    // print map infos
+    std::cout << std::endl << "Map of size: " << level.height << "x" << level.width << std::endl;
+    std::cout << "Player starting position: (" << level.player.pos.x << ", " << level.player.pos.y << ")" << std::endl << std::endl;
 
     su::CoordDouble pos = { level.player.pos.x, level.player.pos.y };
     su::CoordDouble dir = { -1, 0 };
@@ -184,17 +219,15 @@ int main(int argc, char* argv[])
                     color.a = 255;
                     break;
                 case '4': // BLACK
-                    color.r = 0;
-                    color.g = 0;
-                    color.b = 0;
+                    color.r = 140;
+                    color.g = 70;
+                    color.b = 20;
                     color.a = 255;
                     break;
                 default:
-                    color.r = 0;
-                    color.g = 100;
-                    color.b = 100;
-                    color.a = 255;
-                    break;
+                    std::cout << "WHAT?? " << x << ", " << drawStart << ", " << drawEnd << std::endl;
+                    std::cout << "> " << level.level[mapc.x][mapc.y] << " << " << mapc.x << " << " << mapc.y << std::endl;
+                    return -8;
             }
 
             if(side == 1)
@@ -207,7 +240,7 @@ int main(int argc, char* argv[])
         prevTick = curTick;
         curTick = SDL_GetTicks();
         double frameRate = (curTick - prevTick)/1000.0; // calculate framerate
-        printf("FPS: %f\n", 1.0/frameRate);
+        //printf("FPS: %f\n", 1.0/frameRate);
 
         // update screen and clear screen
         su::RGBA clsclr = {100, 100, 100, 255};
@@ -271,6 +304,11 @@ int main(int argc, char* argv[])
             plane.x = plane.x * cos(rotationSpeed) - plane.y * sin(rotationSpeed);
             plane.y = oldPlaneX * sin(rotationSpeed) + plane.y * cos(rotationSpeed);
 		}
+		if (state[SDL_SCANCODE_ESCAPE])
+        {
+            quit = true;
+            quitSDL();
+        }
     }
 
     return 0;
