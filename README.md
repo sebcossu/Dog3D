@@ -11,3 +11,4 @@ It takes a 2D map described by a text file like the one in data folder and rende
 **L** = Move Right  
 **Esc** = Quit  
   
+![](http://www.sebcossu.com/wp-content/uploads/2018/02/dog3d1.png)
